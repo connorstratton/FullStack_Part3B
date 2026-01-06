@@ -5,6 +5,7 @@ const app = express();
 morgan.token('body', request => JSON.stringify(request.body));
 
 app.use(express.json())
+app.use(express.static('dist'))
 
 app.use(morgan((tokens, request, response) => {
     const base = `${tokens.method(request, response)}` +
