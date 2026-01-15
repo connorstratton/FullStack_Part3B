@@ -73,8 +73,8 @@ app.delete('/api/persons/:id', (request, response, next) => {
 app.put('/api/persons/:id', (request, response, next) => {
     const { name, number } = request.body
 
-    Note.findById(request.params.id).then(note => {
-        if (!note){
+    Person.findById(request.params.id).then(person => {
+        if (!person){
             return response.status(404).exit()
         }
 
