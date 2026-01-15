@@ -62,26 +62,12 @@ app.get('/api/persons/:id', (request, response) => {
     Person.findById(request.params.id).then(person => {
         response.json(person)
     })
-    
-    //const id = request.params.id
-    //const person = persons.find(person => person.id === id)
-
-    /**
-    if (!person)
-    {
-        response.status(400).end()
-    }
-    else{
-        response.json(person)
-    }
-         */
 })
 
-app.delete('/api/persons/:id', (request, response) => {
-    const id = request.params.id
-    persons = persons.filter(person => person.id !== id)
-
-    response.status(204).end()
+app.delete('/api/persons/:id', (request, response, next) => {
+    Person.findByIdAndDelete(request.params.id).then(result => {
+            response.status(204).end()
+        }).catch(error => next(error))
 })
 
 
@@ -113,6 +99,19 @@ app.post('/api/persons', (request, response) => {
         response.json(savedPerson)
     })
 })
+
+const errorHandler = (error, request, response, next) => {
+    console.error(error.message)
+
+    if (error.name === 'CastError'){
+        return response.status(400).send({ error: 'maformatted id' })
+    }
+
+    next(error)
+}
+
+app.use(errorHandler)
+
 
 const PORT = process.env.PORT
 app.listen(PORT, () => {
