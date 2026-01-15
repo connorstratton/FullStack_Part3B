@@ -59,9 +59,14 @@ app.get('/info', (request, response) => {
 })
 
 app.get('/api/persons/:id', (request, response) => {
-    const id = request.params.id
-    const person = persons.find(person => person.id === id)
+    Person.findById(request.params.id).then(person => {
+        response.json(person)
+    })
+    
+    //const id = request.params.id
+    //const person = persons.find(person => person.id === id)
 
+    /**
     if (!person)
     {
         response.status(400).end()
@@ -69,6 +74,7 @@ app.get('/api/persons/:id', (request, response) => {
     else{
         response.json(person)
     }
+         */
 })
 
 app.delete('/api/persons/:id', (request, response) => {
@@ -90,7 +96,7 @@ app.post('/api/persons', (request, response) => {
     {
         return response.status(400).json({error: 'no number given'})
     }
-    const names = body.map(body => body.name);
+    const names = persons.map(person => person.name);
     if (names.includes(body.name))
     {
         return response.status(400).json({error: 'name must be unique'})
