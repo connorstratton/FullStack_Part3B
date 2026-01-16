@@ -12,8 +12,28 @@ mongoose.connect(url, { family: 4 }).then(result => {
 ])
 
 const personSchema = new mongoose.Schema({
-    name: String,
+    name: {
+        type: String,
+        minLength: 3,
+        required: true
+    },
+    /**number: {
+        type: String,
+        validate: {
+            validator: function(v) {
+                const USFormat = /^\d{3}-\d{3}-\d{4}$/
+                const foreignFormat = /^\d{2}-\d{6,}$/
+                const foreignFormat2 = /^\d{3}-\d{5,}$/
+                return USFormat.test(v) || foreignFormat.test(v) || foreignFormat2.test(v);
+            },
+            message: props => `${props.value} is not a valid phone number`
+            
+        }, 
+        required: true
+
+    }*/
     number: String,
+
 })
 
 const Person = mongoose.model('Person', personSchema)

@@ -77,7 +77,7 @@ app.put('/api/persons/:id', (request, response, next) => {
 
     Person.findById(request.params.id).then(person => {
         if (!person){
-            return response.status(404).exit()
+            return response.status(404).end()
         }
 
         person.name = name
@@ -90,7 +90,7 @@ app.put('/api/persons/:id', (request, response, next) => {
 })
 
 
-app.post('/api/persons', (request, response) => {
+app.post('/api/persons', (request, response, next) => {
     const body = request.body
 
     if (!body.name)
@@ -100,11 +100,6 @@ app.post('/api/persons', (request, response) => {
     if (!body.number)
     {
         return response.status(400).json({error: 'no number given'})
-    }
-    const names = persons.map(person => person.name);
-    if (names.includes(body.name))
-    {
-        return response.status(400).json({error: 'name must be unique'})
     }
 
     const person = new Person({
@@ -116,14 +111,18 @@ app.post('/api/persons', (request, response) => {
 
     person.save().then(savedPerson => {
         response.json(savedPerson)
-    })
+    }).catch(error => next(error))
 })
 
 const errorHandler = (error, request, response, next) => {
     console.error(error.message)
+    console.error(error.name)
 
     if (error.name === 'CastError'){
         return response.status(400).send({ error: 'maformatted id' })
+    } else if (error.name === 'ValidationError') {
+        console.error(error)
+        return response.status(400).json({ error: error.message })
     }
 
     next(error)
