@@ -7,9 +7,9 @@ const url = process.env.MONGODB_URI
 console.log('connecting to', url)
 mongoose.connect(url, { family: 4 }).then(result => {
     console.log("connected to MongoDB")
-}).catch(error => [
+}).catch(error => {
     console.log('error connecting to MongoDB:', error.message)
-])
+})
 
 const personSchema = new mongoose.Schema({
     name: {
@@ -17,7 +17,7 @@ const personSchema = new mongoose.Schema({
         minLength: 3,
         required: true
     },
-    /**number: {
+    number: {
         type: String,
         validate: {
             validator: function(v) {
@@ -30,10 +30,7 @@ const personSchema = new mongoose.Schema({
             
         }, 
         required: true
-
-    }*/
-    number: String,
-
+    }
 })
 
 const Person = mongoose.model('Person', personSchema)
